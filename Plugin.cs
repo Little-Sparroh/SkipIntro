@@ -27,6 +27,18 @@ namespace MycopunkSkipIntro
             Logger.LogInfo($"{PluginName} loaded successfully.");
         }
     }
+    
+    [HarmonyPatch(typeof(Debug), "LogError", new System.Type[] { typeof(System.Object) })]
+    public static class LogErrorSuppression
+    {
+        [HarmonyPrefix]
+        static bool Prefix(object message)
+        {
+            if (message is string str && str.Contains("Post Event failed"))
+                return false;
+            return true;
+        }
+    }
 
     internal class IntroPatches
     {
